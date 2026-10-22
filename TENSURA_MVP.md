@@ -68,3 +68,7 @@ No hacen falta dependencias nuevas: el módulo ya usa Compose, Hilt, Room y kotl
 
 - Migrar el estado a Room si se quiere compartir con el guardado del juego original.
 - Añadir imágenes/iconos propios y sonido a las pantallas nuevas.
+
+## Estado del build
+
+El workflow **CI** compila `assembleDebug` y publica el APK como artefacto en cada push a `main`.
