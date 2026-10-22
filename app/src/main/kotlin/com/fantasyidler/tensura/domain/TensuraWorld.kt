@@ -123,3 +123,20 @@ object WorldZones {
         zoneStates = all.associate { it.id to ZoneState(it.id, unlocked = it.unlockPhCost <= 0L) },
     )
 }
+
+/**
+ * Lanza un encuentro aleatorio al explorar una zona.
+ * - Zona normal: ~35% de encuentro.
+ * - Hot zone: ~55% de encuentro (más peligro).
+ */
+fun rollEncounter(zone: ZoneDef, state: ZoneState): Pair<Boolean, String> {
+    val baseChance = if (zone.isHotZone) 0.55 else 0.35
+    val visitedBonus = (state.visited * 0.02).coerceIn(0.0, 0.15)
+    val roll = Random.nextDouble()
+    if (roll > baseChance + visitedBonus) {
+        val explorePh = if (zone.isHotZone) 3L else 2L
+        return true to "Exploraste ${zone.name} pero no hubo encuentro. (+$explorePh PH)"
+    }
+    val enemyId = zone.enemyIds.random()
+    return true to "¡Encuentro en ${zone.name}! Enfrentas a $enemyId (peligro ${zone.danger}/10)."
+}
