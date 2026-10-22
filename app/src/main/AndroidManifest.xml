@@ -41,6 +41,18 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".tensura.TensuraActivity"
+            android:exported="true"
+            android:theme="@style/Theme.FantasyIdler"
+            android:label="IdleTensura (Demo)"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".receiver.SessionAlarmReceiver"
             android:exported="false" />
