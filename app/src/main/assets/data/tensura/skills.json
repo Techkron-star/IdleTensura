@@ -58,8 +58,8 @@
       "Reduce la velocidad mientras está activa",
       "No protege contra ataques mentales"
     ],
-    "requirement": "",
-    "evolvesTo": null,
+    "requirement": "Dominar la técnica de endurecimiento",
+    "evolvesTo": "iron_skin_extra",
     "potato": false
   },
   {
@@ -78,8 +78,8 @@
     "weaknesses": [
       "Se evapora ante el calor extremo"
     ],
-    "requirement": "",
-    "evolvesTo": null,
+    "requirement": "Conexión con el flujo acuático",
+    "evolvesTo": "water_veil_extra",
     "potato": false
   },
   {
@@ -99,8 +99,8 @@
     "weaknesses": [
       "No funciona en espacios cerrados"
     ],
-    "requirement": "",
-    "evolvesTo": null,
+    "requirement": "Dominio de la brisa ligera",
+    "evolvesTo": "wind_step_extra",
     "potato": false
   },
   {
@@ -120,8 +120,8 @@
       "Requiere concentración total",
       "No revela nada contra objetivos ocultos"
     ],
-    "requirement": "",
-    "evolvesTo": null,
+    "requirement": "Concentración profunda",
+    "evolvesTo": "analyze_extra",
     "potato": false
   },
   {
@@ -141,8 +141,8 @@
       "Se rompe tras varios usos",
       "Aspecto completamente ridículo"
     ],
-    "requirement": "",
-    "evolvesTo": null,
+    "requirement": "Solo para los elegidos de la papa",
+    "evolvesTo": "potato_sword_extra",
     "potato": true
   },
   {
@@ -203,8 +203,8 @@
     "weaknesses": [
       "Inútil bajo luz directa intensa"
     ],
-    "requirement": "",
-    "evolvesTo": null,
+    "requirement": "Aceptación del vacío",
+    "evolvesTo": "shadow_step",
     "potato": false
   },
   {
@@ -225,8 +225,8 @@
       "No cura a los no muertos",
       "No restaura miembros perdidos"
     ],
-    "requirement": "",
-    "evolvesTo": null,
+    "requirement": "Pureza del manantial",
+    "evolvesTo": "sacred_spring",
     "potato": false
   },
   {
@@ -313,8 +313,8 @@
       "Deja al portador expuesto tras el golpe",
       "No distingue aliados de enemigos"
     ],
-    "requirement": "Dominar Filo Afilado",
-    "evolvesTo": null,
+    "requirement": "Sostener el filo del vacío sin desintegrarse",
+    "evolvesTo": "void_sovereign",
     "potato": false
   },
   {
@@ -335,8 +335,8 @@
       "Se agrieta ante ataques espirituales",
       "Inmoviliza parcialmente al portador"
     ],
-    "requirement": "Soportar el peso de una bendición estelar",
-    "evolvesTo": null,
+    "requirement": "Fe inquebrantable en las estrellas",
+    "evolvesTo": "astral_bastion",
     "potato": false
   },
   {
@@ -357,8 +357,8 @@
       "Consume enormes reservas de magia",
       "El calor también daña al usuario"
     ],
-    "requirement": "Haber consumido un espíritu de fuego",
-    "evolvesTo": null,
+    "requirement": "Dominio absoluto del fuego",
+    "evolvesTo": "infernal_sovereign",
     "potato": false
   },
   {
@@ -379,8 +379,8 @@
       "Erosiona la cordura del portador",
       "Difícil de detener una vez iniciado"
     ],
-    "requirement": "Evolucionar el Gran Sabio",
-    "evolvesTo": null,
+    "requirement": "Conocimiento de la verdad última",
+    "evolvesTo": "annihilation_truth",
     "potato": false
   },
   {
@@ -451,5 +451,245 @@
     "requirement": "Creer en la papa por encima de todo",
     "evolvesTo": null,
     "potato": true
+  },
+  {
+    "id": "iron_skin_extra",
+    "name": "Piel de Hierro+",
+    "description": "Refuerza la piel con mana mineral hasta formar una coraza flexible que amortigua golpes y cortes.",
+    "rank": "EXTRA",
+    "type": "TOGGLEABLE",
+    "categories": [
+      "PHYSICAL",
+      "STATE"
+    ],
+    "mpCost": 12,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Reduce la velocidad mientras está activa",
+      "El calor extremo la resquebraja"
+    ],
+    "requirement": "Dominar la técnica de endurecimiento",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "water_veil_extra",
+    "name": "Velo de Agua+",
+    "description": "Capa líquida que amortigua impactos y cierra heridas leves al contacto.",
+    "rank": "EXTRA",
+    "type": "PASSIVE",
+    "categories": [
+      "ELEMENTAL"
+    ],
+    "mpCost": 10,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 18,
+    "weaknesses": [
+      "Se evapora ante el fuego intenso",
+      "No protege contra ataques mentales"
+    ],
+    "requirement": "Conexión con el flujo acuático",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "wind_step_extra",
+    "name": "Paso del Viento+",
+    "description": "El impulso de aire se vuelve instantáneo: el portador golpea y se reposiciona antes de ser visto.",
+    "rank": "EXTRA",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL",
+      "SENSORY"
+    ],
+    "mpCost": 12,
+    "hpCost": 0,
+    "basePower": 30,
+    "heal": 0,
+    "weaknesses": [
+      "Poco daño contra enemigos inmóviles",
+      "Inútil en espacios cerrados"
+    ],
+    "requirement": "Dominio de la brisa ligera",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "analyze_extra",
+    "name": "Análisis+",
+    "description": "Descompone el flujo de mana enemigo y convierte cada debilidad detectada en una onda de presión mental.",
+    "rank": "EXTRA",
+    "type": "ACTIVE",
+    "categories": [
+      "MENTAL"
+    ],
+    "mpCost": 10,
+    "hpCost": 0,
+    "basePower": 20,
+    "heal": 0,
+    "weaknesses": [
+      "Requiere concentración total",
+      "No afecta a mentes sin mana"
+    ],
+    "requirement": "Concentración profunda",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "potato_sword_extra",
+    "name": "Espada de Papa+",
+    "description": "La papa endurecida gana un filo absurdo pero letal, capaz de cortar armaduras por pura incredulidad.",
+    "rank": "EXTRA",
+    "type": "ACTIVE",
+    "categories": [
+      "PHYSICAL"
+    ],
+    "mpCost": 8,
+    "hpCost": 0,
+    "basePower": 32,
+    "heal": 0,
+    "weaknesses": [
+      "Se rompe tras varios usos",
+      "Aspecto completamente ridículo"
+    ],
+    "requirement": "Solo para los elegidos de la papa",
+    "evolvesTo": null,
+    "potato": true
+  },
+  {
+    "id": "shadow_step",
+    "name": "Paso de Sombras",
+    "description": "El portador se disuelve en la penumbra y reaparece con un corte desde un ángulo imposible.",
+    "rank": "INNATE",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL",
+      "SENSORY"
+    ],
+    "mpCost": 24,
+    "hpCost": 0,
+    "basePower": 52,
+    "heal": 0,
+    "weaknesses": [
+      "Inútil bajo luz directa intensa",
+      "Deja un rastro de mana visible"
+    ],
+    "requirement": "Aceptación del vacío",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "sacred_spring",
+    "name": "Manantial Sagrado",
+    "description": "Brotan aguas benditas que restauran heridas graves y purifican maldiciones.",
+    "rank": "INNATE",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL",
+      "CREATION"
+    ],
+    "mpCost": 26,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 60,
+    "weaknesses": [
+      "No cura a los no muertos",
+      "No restaura miembros perdidos"
+    ],
+    "requirement": "Pureza del manantial",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "void_sovereign",
+    "name": "Soberano del Vacío",
+    "description": "El filo deja de cortar materia: borra su existencia, dejando un surco de nada que devora la luz.",
+    "rank": "ULTIMATE",
+    "type": "ACTIVE",
+    "categories": [
+      "PHYSICAL",
+      "COSMOLOGY"
+    ],
+    "mpCost": 70,
+    "hpCost": 0,
+    "basePower": 130,
+    "heal": 0,
+    "weaknesses": [
+      "Amenaza con consumir al portador",
+      "No distingue aliados de enemigos"
+    ],
+    "requirement": "Sostener el filo del vacío sin desintegrarse",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "astral_bastion",
+    "name": "Bastión Astral",
+    "description": "Una fortaleza de energía estelar envuelve el cuerpo y redistribuye cualquier impacto entre las estrellas.",
+    "rank": "ULTIMATE",
+    "type": "TOGGLEABLE",
+    "categories": [
+      "STATE",
+      "COSMOLOGY"
+    ],
+    "mpCost": 75,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Inmoviliza parcialmente al portador",
+      "Se agrieta ante ataques espirituales"
+    ],
+    "requirement": "Fe inquebrantable en las estrellas",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "infernal_sovereign",
+    "name": "Soberano Infernal",
+    "description": "El dominio de fuego se vuelve absoluto: un mundo de llamas que obedece cada pensamiento del portador.",
+    "rank": "ULTIMATE",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL",
+      "REALITY_MARBLE"
+    ],
+    "mpCost": 72,
+    "hpCost": 0,
+    "basePower": 135,
+    "heal": 0,
+    "weaknesses": [
+      "Consume enormes reservas de magia",
+      "El calor también daña al usuario"
+    ],
+    "requirement": "Dominio absoluto del fuego",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "annihilation_truth",
+    "name": "Verdad del Aniquilamiento",
+    "description": "Comprende la ecuación que sostiene la realidad y borra una variable: el enemigo deja de existir.",
+    "rank": "ULTIMATE",
+    "type": "MIXED",
+    "categories": [
+      "MENTAL",
+      "SPIRITUAL",
+      "COSMOLOGY"
+    ],
+    "mpCost": 78,
+    "hpCost": 0,
+    "basePower": 145,
+    "heal": 0,
+    "weaknesses": [
+      "Erosiona la cordura del portador",
+      "Difícil de detener una vez iniciado"
+    ],
+    "requirement": "Conocimiento de la verdad última",
+    "evolvesTo": null,
+    "potato": false
   }
 ]
