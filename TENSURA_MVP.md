@@ -50,11 +50,19 @@ estimular (despertar, +50% de poder con drenaje de HP) y trascender a rangos sup
 
 ## Cómo compilar
 
-1. Abrir el proyecto en Android Studio y sincronizar Gradle.
-2. Build → Build APK(s). El APK queda en `app/build/outputs/apk/debug/app-debug.apk`.
-3. Instalar en el móvil. Entra al juego y pulsa el botón **✨** de la pantalla de Inicio para abrir el hub de Tensura.
-
 No hacen falta dependencias nuevas: el módulo ya usa Compose, Hilt, Room y kotlinx.serialization.
+
+### Opción A — GitHub Actions (sin instalar nada)
+
+1. Abre https://github.com/Techkron-star/IdleTensura/actions y pulsa **"I understand my workflows, go ahead and enable them"**.
+2. Entra en el workflow **CI** → botón **Run workflow** → rama `main`.
+3. Al terminar, descarga el artefacto **idle-tensura-debug-apk** (contiene `app-debug.apk`) e instálalo en el móvil.
+
+### Opción B — Android Studio (local)
+
+1. Abrir el proyecto y sincronizar Gradle (necesita ~3 GB libres y JDK 17).
+2. Build → Build APK(s). El APK queda en `app/build/outputs/apk/debug/app-debug.apk`.
+3. Instalar en el móvil, entrar al juego y pulsar el botón **✨** de la pantalla de Inicio.
 
 ## Notas para la siguiente iteración
 
