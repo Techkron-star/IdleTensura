@@ -8,8 +8,13 @@ import com.fantasyidler.tensura.domain.MultiplierType
 import com.fantasyidler.tensura.domain.OwnedSkill
 import com.fantasyidler.tensura.domain.SkillDefinition
 import com.fantasyidler.tensura.domain.TensuraState
+import com.fantasyidler.tensura.domain.WorldMap
+import com.fantasyidler.tensura.domain.WorldZones
+import com.fantasyidler.tensura.domain.ZoneDef
+import com.fantasyidler.tensura.domain.ZoneState
 import com.fantasyidler.tensura.domain.label
 import com.fantasyidler.tensura.domain.learnCost
+import com.fantasyidler.tensura.domain.rollEncounter
 import com.fantasyidler.tensura.domain.levelOf
 import com.fantasyidler.tensura.domain.masteryCost
 import com.fantasyidler.tensura.domain.phCost
@@ -40,6 +45,13 @@ class TensuraRepository private constructor(context: Context) {
 
     private val _state = MutableStateFlow(loadState())
     val state: StateFlow<TensuraState> = _state.asStateFlow()
+
+    // ------------------------------------------------------------------
+    // Mundo semi open world (estado en memoria, no persistido)
+    // ------------------------------------------------------------------
+    private val _worldState = MutableStateFlow(WorldZones.initialMap())
+    val worldState: StateFlow<WorldMap> = _worldState.asStateFlow()
+    val world: WorldMap get() = _worldState.value
 
     val combat: CombatEngine = CombatEngine(
         resolveSkill = { id -> catalog[id] },
@@ -398,6 +410,94 @@ class TensuraRepository private constructor(context: Context) {
         persist()
         combat.reset()
         return "Progreso de Tensura reiniciado."
+    }
+
+    // ------------------------------------------------------------------
+    // Mundo semi open world: zonas, hot zones y encuentros aleatorios
+    // ------------------------------------------------------------------
+
+    fun zoneDefs(): List<ZoneDef> = WorldZones.all
+
+    fun zoneDef(id: String): ZoneDef? = WorldZones.byId(id)
+
+    fun unlockZone(zoneId: String): String {
+        val s = _state.value
+        val zone = WorldZones.byId(zoneId) ?: return "Zona no encontrada."
+        val current = world.zoneStates[zoneId] ?: return "Zona no registrada."
+        if (current.unlocked) return "Ya desbloqueaste " + zone.name + "."
+        if (s.ph < zone.unlockPhCost) return "Necesitas " + zone.unlockPhCost + " PH para desbloquear " + zone.name + "."
+        val updatedStates = world.zoneStates + (zoneId to current.copy(unlocked = true))
+        _state.value = s.copy(ph = s.ph - zone.unlockPhCost)
+        _worldState.value = world.copy(zoneStates = updatedStates)
+        persist()
+        return "🗺️ ¡Zona desbloqueada: " + zone.name + "!"
+    }
+
+    fun startWorldZoneEncounter(zoneId: String): String {
+        val s = _state.value
+        val zone = WorldZones.byId(zoneId) ?: return "Zona no encontrada."
+        val current = world.zoneStates[zoneId] ?: return "Zona no registrada."
+        if (!current.unlocked) return "Zona bloqueada: " + zone.name + "."
+        if (world.currentZoneId != null) return "Ya estás en un encuentro en otra zona."
+
+        val (found, message) = rollEncounter(zone, current)
+        val updatedState = current.copy(visited = current.visited + 1, lastEncounterMs = System.currentTimeMillis())
+        val updatedStates = world.zoneStates + (zoneId to updatedState)
+        var worldMap = world.copy(zoneStates = updatedStates)
+
+        if (!found) {
+            _state.value = s.copy(ph = s.ph + 2)
+            _worldState.value = worldMap.copy(currentZoneId = zoneId)
+            persist()
+            return message + "\n(+) PH por explorar."
+        }
+
+        worldMap = worldMap.copy(currentZoneId = zoneId)
+        _worldState.value = worldMap
+        persist()
+        combat.start(enemyFor(zone))
+        return message + "\n⚔️ ¡Combate iniciado!"
+    }
+
+    fun finalizeWorldEncounter(): String? {
+        val s = _state.value
+        val zoneId = world.currentZoneId ?: return null
+        val combatState = combat.state.value
+        if (!combatState.victory && !combatState.defeat) return null
+
+        val zone = WorldZones.byId(zoneId) ?: return null
+        val current = world.zoneStates[zoneId] ?: ZoneState(zoneId)
+
+        val updated = current.copy(
+            enemiesDefeated = current.enemiesDefeated + (if (combatState.victory) 1 else 0),
+        )
+        val updatedStates = world.zoneStates + (zoneId to updated)
+        var worldMap = world.copy(
+            zoneStates = updatedStates,
+            currentZoneId = null,
+            totalEncounters = world.totalEncounters + 1,
+            totalVictories = world.totalVictories + (if (combatState.victory) 1 else 0),
+        )
+
+        val msg = if (combatState.victory) {
+            "🎉 ¡Victoria en " + zone.name + "! +" + combatState.rewardCoins + " oro · +" + combatState.rewardPh + " PH · +" + combatState.rewardSkillXp + " XP."
+        } else {
+            "💀 Derrota en " + zone.name + "."
+        }
+
+        _state.value = s.copy(
+            ph = s.ph + combatState.rewardPh,
+            coins = s.coins + combatState.rewardCoins,
+        )
+        _worldState.value = worldMap
+        persist()
+        return msg
+    }
+
+    private fun enemyFor(zone: ZoneDef): com.fantasyidler.tensura.domain.EnemyDef {
+        val id = zone.enemyIds.random()
+        return com.fantasyidler.tensura.domain.EnemyCatalog.enemies.find { it.id == id }
+            ?: zone.enemyIds.first().let { com.fantasyidler.tensura.domain.EnemyCatalog.enemies.first() }
     }
 
     companion object {
