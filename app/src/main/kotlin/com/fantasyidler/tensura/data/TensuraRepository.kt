@@ -6,7 +6,6 @@ import com.fantasyidler.tensura.domain.CombatReward
 import com.fantasyidler.tensura.domain.MasteryLevel
 import com.fantasyidler.tensura.domain.MultiplierType
 import com.fantasyidler.tensura.domain.OwnedSkill
-import com.fantasyidler.tensura.domain.QueueSlot
 import com.fantasyidler.tensura.domain.SkillDefinition
 import com.fantasyidler.tensura.domain.TensuraState
 import com.fantasyidler.tensura.domain.label
@@ -210,7 +209,7 @@ class TensuraRepository private constructor(context: Context) {
                 val coinsGain = (minutes * 8.0 * rankMult * s.multipliers.coins * cycles).toLong()
                 val xpGain = (minutes * 4.0 * rankMult * s.multipliers.skillXp * cycles).toInt().coerceAtLeast(1)
                 slot.copy(
-                    startedAtMs = now,
+                    startedAtMs = slot.startedAtMs + cycles.toLong() * slot.durationMs,
                     pendingPh = slot.pendingPh + phGain,
                     pendingCoins = slot.pendingCoins + coinsGain,
                     pendingXp = slot.pendingXp + xpGain,
