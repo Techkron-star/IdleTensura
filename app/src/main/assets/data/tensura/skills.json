@@ -1,0 +1,455 @@
+[
+  {
+    "id": "piercing_strike",
+    "name": "Estocada Perforante",
+    "description": "Concentra el aura en la punta del arma para atravesar la guardia del enemigo con un único impulso.",
+    "rank": "COMMON",
+    "type": "ACTIVE",
+    "categories": [
+      "PHYSICAL"
+    ],
+    "mpCost": 6,
+    "hpCost": 0,
+    "basePower": 22,
+    "heal": 0,
+    "weaknesses": [
+      "Alcance muy corto",
+      "Pierde eficacia contra armaduras gruesas"
+    ],
+    "requirement": "",
+    "evolvesTo": "sharpened_edge",
+    "potato": false
+  },
+  {
+    "id": "fire_bolt",
+    "name": "Proyectil Ígneo",
+    "description": "Lanza una pequeña esfera de llamas que explota al impactar contra el objetivo.",
+    "rank": "COMMON",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL"
+    ],
+    "mpCost": 10,
+    "hpCost": 0,
+    "basePower": 26,
+    "heal": 0,
+    "weaknesses": [
+      "Inútil contra criaturas resistentes al fuego"
+    ],
+    "requirement": "",
+    "evolvesTo": "flame_spear",
+    "potato": false
+  },
+  {
+    "id": "iron_skin",
+    "name": "Piel de Hierro",
+    "description": "Endurece la superficie del cuerpo imitando la dureza del mineral para amortiguar los golpes.",
+    "rank": "COMMON",
+    "type": "TOGGLEABLE",
+    "categories": [
+      "PHYSICAL",
+      "STATE"
+    ],
+    "mpCost": 8,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Reduce la velocidad mientras está activa",
+      "No protege contra ataques mentales"
+    ],
+    "requirement": "",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "water_veil",
+    "name": "Velo de Agua",
+    "description": "Envuelve el cuerpo en una fina capa de agua que desvía ligeramente los ataques entrantes.",
+    "rank": "COMMON",
+    "type": "PASSIVE",
+    "categories": [
+      "ELEMENTAL"
+    ],
+    "mpCost": 5,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Se evapora ante el calor extremo"
+    ],
+    "requirement": "",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "wind_step",
+    "name": "Paso del Viento",
+    "description": "Impulsa el cuerpo con una corriente de aire para desplazarse en un instante.",
+    "rank": "COMMON",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL",
+      "SENSORY"
+    ],
+    "mpCost": 4,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "No funciona en espacios cerrados"
+    ],
+    "requirement": "",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "analyze",
+    "name": "Analizar",
+    "description": "Examina la estructura del objetivo y revela sus puntos débiles y su energía restante.",
+    "rank": "COMMON",
+    "type": "ACTIVE",
+    "categories": [
+      "MENTAL"
+    ],
+    "mpCost": 7,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Requiere concentración total",
+      "No revela nada contra objetivos ocultos"
+    ],
+    "requirement": "",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "potato_sword",
+    "name": "Espada de Papa",
+    "description": "Blande una papa endurecida como si fuera una espada, con resultados sorprendentemente decentes.",
+    "rank": "COMMON",
+    "type": "ACTIVE",
+    "categories": [
+      "PHYSICAL"
+    ],
+    "mpCost": 3,
+    "hpCost": 0,
+    "basePower": 12,
+    "heal": 0,
+    "weaknesses": [
+      "Se rompe tras varios usos",
+      "Aspecto completamente ridículo"
+    ],
+    "requirement": "",
+    "evolvesTo": null,
+    "potato": true
+  },
+  {
+    "id": "sharpened_edge",
+    "name": "Filo Afilado",
+    "description": "Refina el aura sobre el filo del arma hasta convertirlo en una línea de corte casi invisible.",
+    "rank": "EXTRA",
+    "type": "ACTIVE",
+    "categories": [
+      "PHYSICAL"
+    ],
+    "mpCost": 12,
+    "hpCost": 0,
+    "basePower": 40,
+    "heal": 0,
+    "weaknesses": [
+      "Consume mucho aguante en golpes repetidos"
+    ],
+    "requirement": "Haber dominado Estocada Perforante",
+    "evolvesTo": "blade_of_the_void",
+    "potato": false
+  },
+  {
+    "id": "flame_spear",
+    "name": "Lanza de Llama",
+    "description": "Compacta el fuego en una lanza ardiente que atraviesa la línea enemiga al ser arrojada.",
+    "rank": "EXTRA",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL"
+    ],
+    "mpCost": 16,
+    "hpCost": 0,
+    "basePower": 48,
+    "heal": 0,
+    "weaknesses": [
+      "Tarda en cargarse",
+      "Puede incendiar el entorno propio"
+    ],
+    "requirement": "Dominar Proyectil Ígneo",
+    "evolvesTo": "inferno_domain",
+    "potato": false
+  },
+  {
+    "id": "shadow_movement",
+    "name": "Movimiento Sombrío",
+    "description": "Se desliza entre las sombras para reaparecer detrás del enemigo sin ser percibido.",
+    "rank": "EXTRA",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL",
+      "SENSORY"
+    ],
+    "mpCost": 14,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Inútil bajo luz directa intensa"
+    ],
+    "requirement": "",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "healing_water",
+    "name": "Agua Curativa",
+    "description": "Genera un agua cargada de energía vital que cierra heridas al contacto con la piel.",
+    "rank": "EXTRA",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL",
+      "CREATION"
+    ],
+    "mpCost": 18,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 35,
+    "weaknesses": [
+      "No cura a los no muertos",
+      "No restaura miembros perdidos"
+    ],
+    "requirement": "",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "great_sage",
+    "name": "Gran Sabio",
+    "description": "Despierta una conciencia analítica que calcula el mundo y asiste cada decisión del portador.",
+    "rank": "UNIQUE",
+    "type": "PASSIVE",
+    "categories": [
+      "MENTAL",
+      "SENSORY"
+    ],
+    "mpCost": 0,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "No otorga poder de combate directo",
+      "Consume atención de forma constante"
+    ],
+    "requirement": "Sobrevivir a una muerte parcial del alma",
+    "evolvesTo": "sage_of_annihilation",
+    "potato": false
+  },
+  {
+    "id": "predator",
+    "name": "Depredador",
+    "description": "Devora al objetivo y almacena su esencia para imitar sus capacidades más tarde.",
+    "rank": "UNIQUE",
+    "type": "ACTIVE",
+    "categories": [
+      "SPIRITUAL",
+      "STATE"
+    ],
+    "mpCost": 0,
+    "hpCost": 10,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "No puede devorar voluntades superiores",
+      "Requiere contacto prolongado"
+    ],
+    "requirement": "Poseer un núcleo espiritual estable",
+    "evolvesTo": "void_god_azathoth",
+    "potato": false
+  },
+  {
+    "id": "titanification",
+    "name": "Titanización",
+    "description": "Infla la masa corporal con energía densa para adoptar una forma gigantesca y brutal.",
+    "rank": "UNIQUE",
+    "type": "TOGGLEABLE",
+    "categories": [
+      "PHYSICAL",
+      "STATE"
+    ],
+    "mpCost": 25,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Consumo de energía continuo",
+      "Objetivo enorme y fácil de alcanzar"
+    ],
+    "requirement": "",
+    "evolvesTo": "titanification_true",
+    "potato": false
+  },
+  {
+    "id": "blade_of_the_void",
+    "name": "Espada del Vacío",
+    "description": "Corta la realidad con un filo de nada que ignora la materia convencional.",
+    "rank": "UNIQUE",
+    "type": "ACTIVE",
+    "categories": [
+      "PHYSICAL",
+      "COSMOLOGY"
+    ],
+    "mpCost": 30,
+    "hpCost": 0,
+    "basePower": 85,
+    "heal": 0,
+    "weaknesses": [
+      "Deja al portador expuesto tras el golpe",
+      "No distingue aliados de enemigos"
+    ],
+    "requirement": "Dominar Filo Afilado",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "celestial_shell",
+    "name": "Caparazón Celestial",
+    "description": "Teje una coraza de energía estelar que absorbe los impactos y los redistribuye por el cuerpo.",
+    "rank": "SINGULAR",
+    "type": "TOGGLEABLE",
+    "categories": [
+      "STATE",
+      "COSMOLOGY"
+    ],
+    "mpCost": 35,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Se agrieta ante ataques espirituales",
+      "Inmoviliza parcialmente al portador"
+    ],
+    "requirement": "Soportar el peso de una bendición estelar",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "inferno_domain",
+    "name": "Dominio Infernal",
+    "description": "Expande un territorio de llamas absolutas donde todo lo que entra arde sin remedio.",
+    "rank": "SINGULAR",
+    "type": "ACTIVE",
+    "categories": [
+      "ELEMENTAL",
+      "REALITY_MARBLE"
+    ],
+    "mpCost": 45,
+    "hpCost": 0,
+    "basePower": 100,
+    "heal": 0,
+    "weaknesses": [
+      "Consume enormes reservas de magia",
+      "El calor también daña al usuario"
+    ],
+    "requirement": "Haber consumido un espíritu de fuego",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "sage_of_annihilation",
+    "name": "Sabio de la Aniquilación",
+    "description": "Fusiona el cálculo del Gran Sabio con la voluntad destructiva hasta convertir el pensamiento en un arma.",
+    "rank": "SINGULAR",
+    "type": "ACTIVE",
+    "categories": [
+      "MENTAL",
+      "SPIRITUAL"
+    ],
+    "mpCost": 50,
+    "hpCost": 0,
+    "basePower": 90,
+    "heal": 0,
+    "weaknesses": [
+      "Erosiona la cordura del portador",
+      "Difícil de detener una vez iniciado"
+    ],
+    "requirement": "Evolucionar el Gran Sabio",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "void_god_azathoth",
+    "name": "Dios del Vacío Azathoth",
+    "description": "Despierta el poder de un dios dormido que devora la creación y la reescribe desde la nada.",
+    "rank": "ULTIMATE",
+    "type": "MIXED",
+    "categories": [
+      "COSMOLOGY",
+      "SPIRITUAL",
+      "REALITY_MARBLE"
+    ],
+    "mpCost": 80,
+    "hpCost": 20,
+    "basePower": 120,
+    "heal": 0,
+    "weaknesses": [
+      "Amenaza con consumir al propio portador",
+      "Requiere un núcleo perfecto para no colapsar"
+    ],
+    "requirement": "Haber devorado a un ser de rango divino",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "titanification_true",
+    "name": "Titanización Verdadera",
+    "description": "Transforma el cuerpo en un titán de proporciones divinas cuya sola pisada reordena el terreno.",
+    "rank": "ULTIMATE",
+    "type": "TOGGLEABLE",
+    "categories": [
+      "PHYSICAL",
+      "STATE",
+      "CREATION"
+    ],
+    "mpCost": 60,
+    "hpCost": 0,
+    "basePower": 0,
+    "heal": 0,
+    "weaknesses": [
+      "Pérdida casi total de precisión",
+      "Consumo insostenible en combates largos"
+    ],
+    "requirement": "Dominar la Titanización",
+    "evolvesTo": null,
+    "potato": false
+  },
+  {
+    "id": "potato_god",
+    "name": "Dios Papa",
+    "description": "Eleva la papa a la categoría de concepto divino y golpea con el peso de un mundo entero.",
+    "rank": "ULTIMATE",
+    "type": "MIXED",
+    "categories": [
+      "PHYSICAL",
+      "COSMOLOGY",
+      "CREATION"
+    ],
+    "mpCost": 40,
+    "hpCost": 0,
+    "basePower": 110,
+    "heal": 0,
+    "weaknesses": [
+      "Su forma comestible atrae a los hambrientos",
+      "Ridículo ante cualquier testigo"
+    ],
+    "requirement": "Creer en la papa por encima de todo",
+    "evolvesTo": null,
+    "potato": true
+  }
+]
