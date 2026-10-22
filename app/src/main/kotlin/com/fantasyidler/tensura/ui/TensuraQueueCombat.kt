@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -42,11 +43,13 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun QueueTab(repo: TensuraRepository, state: TensuraState) {
-    var durationMs by remember { mutableLongStateOf(120000L) }
+    var durationMs by remember { mutableLongStateOf(60000L) }
     var message by remember { mutableStateOf<String?>(null) }
+    var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
     LaunchedEffect(Unit) {
         while (true) {
+            now = System.currentTimeMillis()
             repo.tickQueue()
             delay(1000L)
         }
@@ -71,11 +74,11 @@ fun QueueTab(repo: TensuraRepository, state: TensuraState) {
                     OutlinedButton(
                         onClick = { durationMs = option },
                         colors = if (selected) {
-                            androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                            ButtonDefaults.outlinedButtonColors(
                                 containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.22f),
                             )
                         } else {
-                            androidx.compose.material3.ButtonDefaults.outlinedButtonColors()
+                            ButtonDefaults.outlinedButtonColors()
                         },
                     ) {
                         Text((option / 60000L).toString() + " min", style = MaterialTheme.typography.labelSmall)
@@ -92,6 +95,7 @@ fun QueueTab(repo: TensuraRepository, state: TensuraState) {
         items(state.queue, key = { it.index }) { slot ->
             QueueSlotCard(
                 slot = slot,
+                now = now,
                 owned = state.owned.keys.toList(),
                 nameOf = { id -> repo.catalog[id]?.name ?: id },
                 onStart = { skillId -> message = repo.startQueue(slot.index, skillId, durationMs) },
@@ -106,6 +110,7 @@ fun QueueTab(repo: TensuraRepository, state: TensuraState) {
 @Composable
 private fun QueueSlotCard(
     slot: QueueSlot,
+    now: Long,
     owned: List<String>,
     nameOf: (String) -> String,
     onStart: (String) -> Unit,
@@ -135,9 +140,9 @@ private fun QueueSlotCard(
             }
             if (slot.active && slot.skillId != null) {
                 Text(nameOf(slot.skillId), style = MaterialTheme.typography.bodyMedium)
-                Bar(progress = slot.progress(System.currentTimeMillis()), color = MaterialTheme.colorScheme.primary)
+                Bar(progress = slot.progress(now), color = MaterialTheme.colorScheme.primary)
                 Text(
-                    text = "Quedan " + formatTime(slot.remainingMs(System.currentTimeMillis())),
+                    text = "Quedan " + formatTime(slot.remainingMs(now)),
                     style = MaterialTheme.typography.labelSmall,
                 )
                 TextButton(onClick = onStop) { Text("Detener (conserva lo pendiente)") }
