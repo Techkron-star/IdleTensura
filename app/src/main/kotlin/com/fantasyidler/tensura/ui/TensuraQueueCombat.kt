@@ -1,9 +1,13 @@
 package com.fantasyidler.tensura.ui
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,11 +17,11 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
@@ -29,16 +33,20 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fantasyidler.tensura.data.TensuraRepository
 import com.fantasyidler.tensura.domain.CombatState
@@ -278,6 +286,7 @@ private fun SkillPickerDialog(
     title: String,
     skills: List<SkillDefinition>,
     owned: Map<String, OwnedSkill>,
+    mpAvailable: Int? = null,
     onDismiss: () -> Unit,
     onSelect: (String) -> Unit,
 ) {
@@ -292,11 +301,12 @@ private fun SkillPickerDialog(
                 LazyColumn(modifier = Modifier.heightIn(max = 380.dp)) {
                     items(skills, key = { it.id }) { def ->
                         val own = owned[def.id]
+                        val affordable = mpAvailable == null || def.mpCost <= mpAvailable
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 3.dp)
-                                .clickable { onSelect(def.id) },
+                                .clickable(enabled = affordable) { onSelect(def.id) },
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                         ) {
                             Row(
@@ -304,10 +314,20 @@ private fun SkillPickerDialog(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(def.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                                    Text(
+                                        text = def.name,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = if (affordable) {
+                                            MaterialTheme.colorScheme.onSurface
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                                        },
+                                    )
                                     Text(
                                         text = def.rank.label + " · " + def.type.label +
-                                            (own?.let { " · " + it.mastery.label } ?: ""),
+                                            (own?.let { " · " + it.mastery.label } ?: "") +
+                                            (if (def.basePower > 0) " · Poder " + def.basePower else ""),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
@@ -315,7 +335,11 @@ private fun SkillPickerDialog(
                                 Text(
                                     text = "MP " + def.mpCost,
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary,
+                                    color = if (affordable) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.error
+                                    },
                                 )
                             }
                         }
@@ -403,6 +427,11 @@ private fun EnemyCard(enemy: EnemyDef, onFight: () -> Unit) {
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = spriteForEnemy(enemy.id),
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(end = 10.dp),
+                )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(enemy.name, fontWeight = FontWeight.Bold)
                     Text(
@@ -455,80 +484,100 @@ private fun CombatActive(
     showSkills: Boolean,
     setShowSkills: (Boolean) -> Unit,
 ) {
-    val logState = rememberLazyListState()
-    LaunchedEffect(combat.log.size) {
-        if (combat.log.isNotEmpty()) {
-            logState.animateScrollToItem(combat.log.lastIndex)
+    val enemy = combat.enemy
+    val enemyName = enemy?.name ?: "Enemigo"
+    val enemyMax = enemy?.hp ?: 1
+    val latest = combat.log.lastOrNull().orEmpty()
+    var typed by remember(latest) { mutableIntStateOf(0) }
+    var showLog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(latest) {
+        typed = 0
+        while (typed < latest.length) {
+            delay(14L)
+            typed++
         }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        val enemy = combat.enemy
-        val enemyName = enemy?.name ?: "Enemigo"
-        val enemyMax = enemy?.hp ?: 1
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 6.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.10f)),
-        ) {
-            Column(modifier = Modifier.padding(10.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(enemyName, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text("Turno " + combat.turn, style = MaterialTheme.typography.labelSmall)
-                }
-                Bar(progress = combat.enemyHp.toFloat() / enemyMax.toFloat(), color = MaterialTheme.colorScheme.error)
-                Text(
-                    text = combat.enemyHp.toString() + " / " + enemyMax + " HP" +
-                        (enemy?.let { " · ATK " + it.attack + " · DEF " + it.defense } ?: ""),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 6.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)),
-        ) {
-            Column(modifier = Modifier.padding(10.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Tú", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = "Pociones x" + combat.potions,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.tertiary,
-                    )
-                }
-                Bar(
-                    progress = combat.playerHp.toFloat() / combat.playerMaxHp.toFloat(),
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = combat.playerHp.toString() + " / " + combat.playerMaxHp + " HP · " +
-                        combat.playerMp + " / " + combat.playerMaxMp + " MP",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-
-        Card(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(top = 6.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                .clip(RoundedCornerShape(14.dp))
+                .background(Brush.verticalGradient(listOf(Color(0xFF0E2A16), Color(0xFF2E7D32))))
+                .padding(10.dp),
         ) {
-            LazyColumn(state = logState, modifier = Modifier.padding(8.dp)) {
-                items(combat.log) { line ->
-                    Text(line, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(vertical = 1.dp))
+            Column(modifier = Modifier.fillMaxSize()) {
+                Row(verticalAlignment = Alignment.Top) {
+                    BattleInfoCard(
+                        name = enemyName,
+                        subtitle = enemy?.tier ?: "",
+                        hp = combat.enemyHp,
+                        maxHp = enemyMax,
+                        mp = null,
+                        maxMp = null,
+                        stats = enemy?.let { "ATK " + it.attack + " · DEF " + it.defense + " · VEL " + it.speed } ?: "",
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        text = spriteForEnemy(enemy?.id),
+                        fontSize = 52.sp,
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
                 }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Text(
+                        text = "🧙",
+                        fontSize = 52.sp,
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+                    BattleInfoCard(
+                        name = "Tú",
+                        subtitle = "Turno " + combat.turn,
+                        hp = combat.playerHp,
+                        maxHp = combat.playerMaxHp,
+                        mp = combat.playerMp,
+                        maxMp = combat.playerMaxMp,
+                        stats = "ATK " + state.stats.attack + " · DEF " + state.stats.defense + " · VEL " + state.stats.speed,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            }
+        }
+
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(10.dp),
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    if (combat.log.size >= 2) {
+                        Text(
+                            text = combat.log[combat.log.size - 2],
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    Text(
+                        text = latest.take(typed),
+                        style = MaterialTheme.typography.bodyMedium,
+                        minLines = 2,
+                    )
+                }
+                TextButton(onClick = { showLog = true }) { Text("📜") }
             }
         }
 
@@ -537,23 +586,51 @@ private fun CombatActive(
                 onClick = { repo.combat.reset() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = 8.dp)
+                    .height(48.dp),
             ) {
-                Text("Continuar")
+                Text(if (combat.victory) "Continuar" else "Reintentar")
             }
         } else {
-            ActionRow(
-                left = "⚔ Atacar" to { repo.combat.act(PlayerAction.ATTACK) },
-                right = "💥 Pesado" to { repo.combat.act(PlayerAction.HEAVY_ATTACK) },
-            )
-            ActionRow(
-                left = "🛡 Defender" to { repo.combat.act(PlayerAction.DEFEND) },
-                right = "💨 Esquivar" to { repo.combat.act(PlayerAction.DODGE) },
-            )
-            ActionRow(
-                left = "✨ Skills" to { setShowSkills(true) },
-                right = "🧪 Poción (" + combat.potions + ")" to { repo.combat.act(PlayerAction.ITEM) },
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                BattleButton("⚔ Atacar", Color(0xFFD32F2F), Modifier.weight(1f)) {
+                    repo.combat.act(PlayerAction.ATTACK)
+                }
+                BattleButton("✨ Habilidad", Color(0xFF7B1FA2), Modifier.weight(1f)) {
+                    setShowSkills(true)
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                BattleButton("🛡 Defender", Color(0xFF1565C0), Modifier.weight(1f)) {
+                    repo.combat.act(PlayerAction.DEFEND)
+                }
+                BattleButton("🧪 Poción (" + combat.potions + ")", Color(0xFF2E7D32), Modifier.weight(1f)) {
+                    repo.combat.act(PlayerAction.ITEM)
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                BattleButton("💥 Pesado", Color(0xFFEF6C00), Modifier.weight(1f)) {
+                    repo.combat.act(PlayerAction.HEAVY_ATTACK)
+                }
+                BattleButton("💨 Esquivar", Color(0xFF00897B), Modifier.weight(1f)) {
+                    repo.combat.act(PlayerAction.DODGE)
+                }
+            }
         }
     }
 
@@ -562,6 +639,7 @@ private fun CombatActive(
             title = "Usar habilidad",
             skills = state.owned.keys.mapNotNull { repo.catalog[it] }.sortedBy { it.rank.ordinal },
             owned = state.owned,
+            mpAvailable = combat.playerMp,
             onDismiss = { setShowSkills(false) },
             onSelect = { id ->
                 repo.combat.act(PlayerAction.SKILL, id)
@@ -569,21 +647,144 @@ private fun CombatActive(
             },
         )
     }
+
+    if (showLog) {
+        AlertDialog(
+            onDismissRequest = { showLog = false },
+            confirmButton = { TextButton(onClick = { showLog = false }) { Text("Cerrar") } },
+            title = { Text("Registro de combate") },
+            text = {
+                LazyColumn(modifier = Modifier.heightIn(max = 380.dp)) {
+                    items(combat.log) { line ->
+                        Text(
+                            text = line,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(vertical = 1.dp),
+                        )
+                    }
+                }
+            },
+        )
+    }
 }
 
 @Composable
-private fun ActionRow(left: Pair<String, () -> Unit>, right: Pair<String, () -> Unit>) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Button(onClick = left.second, modifier = Modifier.weight(1f)) {
-            Text(left.first, style = MaterialTheme.typography.labelMedium)
-        }
-        Button(onClick = right.second, modifier = Modifier.weight(1f)) {
-            Text(right.first, style = MaterialTheme.typography.labelMedium)
+private fun BattleInfoCard(
+    name: String,
+    subtitle: String,
+    hp: Int,
+    maxHp: Int,
+    mp: Int?,
+    maxMp: Int?,
+    stats: String,
+    modifier: Modifier = Modifier,
+) {
+    Surface(color = Color(0xCC06140A), shape = RoundedCornerShape(10.dp), modifier = modifier) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color(0xFFB9F6CA),
+                    maxLines = 1,
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            val hpRatio = if (maxHp <= 0) 0f else hp.toFloat() / maxHp.toFloat()
+            BattleBar(progress = hpRatio, color = hpColor(hpRatio))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "HP " + hp + "/" + maxHp,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White,
+                )
+                if (mp != null && maxMp != null) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "MP " + mp + "/" + maxMp,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color(0xFF90CAF9),
+                    )
+                }
+            }
+            if (mp != null && maxMp != null) {
+                val mpRatio = if (maxMp <= 0) 0f else mp.toFloat() / maxMp.toFloat()
+                BattleBar(progress = mpRatio, color = Color(0xFF42A5F5))
+            }
+            Text(
+                text = stats,
+                style = MaterialTheme.typography.labelSmall,
+                color = Color(0xFFC8E6C9),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
     }
+}
+
+@Composable
+private fun BattleBar(progress: Float, color: Color) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp)
+            .height(8.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(Color(0x66000000)),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(progress.coerceIn(0f, 1f))
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(color),
+        )
+    }
+}
+
+@Composable
+private fun BattleButton(
+    text: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(46.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = Color.White),
+        contentPadding = PaddingValues(horizontal = 4.dp),
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+private fun hpColor(ratio: Float): Color = when {
+    ratio > 0.5f -> Color(0xFF66BB6A)
+    ratio > 0.2f -> Color(0xFFFFCA28)
+    else -> Color(0xFFEF5350)
+}
+
+private fun spriteForEnemy(id: String?): String = when (id) {
+    "slime_01" -> "🟢"
+    "goblin_01" -> "👹"
+    "direwolf_01" -> "🐺"
+    "orc_lord" -> "🐗"
+    "charybdis" -> "🌀"
+    "demon_lord" -> "😈"
+    else -> "👾"
 }
