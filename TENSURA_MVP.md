@@ -17,7 +17,7 @@ No modifica ninguna pantalla existente del juego.
 | UI | `ui/TensuraHubScreen.kt` | Hub con pestañas + componentes base |
 | UI | `ui/TensuraSkillsShop.kt` | Habilidades (maestría, fusión, estímulo, trascendencia) y tienda de multiplicadores |
 | UI | `ui/TensuraQueueCombat.kt` | Colas automáticas y combate por turnos |
-| Entrada | `tensura/TensuraActivity.kt` | Actividad propia (lanzador "IdleTensura (Demo)") |
+| Entrada | `ui/navigation/Screen.kt` + `AppNavigation.kt` | Ruta `tensura` accesible con el botón ✨ de la pantalla de Inicio |
 
 ## Progreso y colas (rework "menos tedioso")
 
@@ -52,12 +52,11 @@ estimular (despertar, +50% de poder con drenaje de HP) y trascender a rangos sup
 
 1. Abrir el proyecto en Android Studio y sincronizar Gradle.
 2. Build → Build APK(s). El APK queda en `app/build/outputs/apk/debug/app-debug.apk`.
-3. Instalar en el móvil. Aparecerán **dos iconos**: el juego original y **IdleTensura (Demo)**.
+3. Instalar en el móvil. Entra al juego y pulsa el botón **✨** de la pantalla de Inicio para abrir el hub de Tensura.
 
 No hacen falta dependencias nuevas: el módulo ya usa Compose, Hilt, Room y kotlinx.serialization.
 
 ## Notas para la siguiente iteración
 
-- Enlazar el hub dentro de la navegación principal (hoy es una actividad aparte) para unificar iconos.
 - Migrar el estado a Room si se quiere compartir con el guardado del juego original.
 - Añadir imágenes/iconos propios y sonido a las pantallas nuevas.
