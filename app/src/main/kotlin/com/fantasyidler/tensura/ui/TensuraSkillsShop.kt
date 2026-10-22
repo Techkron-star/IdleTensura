@@ -36,6 +36,8 @@ import com.fantasyidler.tensura.domain.MultiplierType
 import com.fantasyidler.tensura.domain.OwnedSkill
 import com.fantasyidler.tensura.domain.SkillDefinition
 import com.fantasyidler.tensura.domain.TensuraState
+import com.fantasyidler.tensura.domain.description
+import com.fantasyidler.tensura.domain.label
 import com.fantasyidler.tensura.domain.learnCost
 import com.fantasyidler.tensura.domain.levelOf
 import com.fantasyidler.tensura.domain.masteryCost
