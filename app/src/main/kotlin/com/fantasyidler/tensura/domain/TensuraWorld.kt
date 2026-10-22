@@ -1,19 +1,16 @@
 package com.fantasyidler.tensura.domain
 
-import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
-@Serializable
-enum class Biome(val label: String, val color: Int) {
-    GRASSLAND("Llanura", 0xFF8BC34A),
-    FOREST("Bosque", 0xFF4CAF50),
-    CAVE("Cueva", 0xFF795548),
-    VOLCANO("Volcán", 0xFFF44336),
-    WASTELAND("Yermo", 0xFF9E9E9E),
-    DUNGEON("Mazmorra", 0xFF4527A0),
+enum class Biome(val label: String) {
+    GRASSLAND("Llanura"),
+    FOREST("Bosque"),
+    CAVE("Cueva"),
+    VOLCANO("Volcán"),
+    WASTELAND("Yermo"),
+    DUNGEON("Mazmorra"),
 }
 
-@Serializable
 data class ZoneDef(
     val id: String,
     val name: String,
@@ -27,7 +24,6 @@ data class ZoneDef(
     val description: String,
 )
 
-@Serializable
 data class ZoneState(
     val zoneId: String,
     val unlocked: Boolean = false,
@@ -36,7 +32,6 @@ data class ZoneState(
     val lastEncounterMs: Long = 0L,
 )
 
-@Serializable
 data class WorldMap(
     val zones: List<ZoneDef>,
     val zoneStates: Map<String, ZoneState> = emptyMap(),
@@ -81,7 +76,7 @@ object WorldZones {
             lootMultiplier = 1.5,
             enemyIds = listOf("direwolf_01", "goblin_01"),
             unlockPhCost = 150L,
-            description = "🔥 ZONA CALIENTE: peligro elevado, botín x1,5.",
+            description = "Zona caliente: peligro elevado, botín x1,5.",
         ),
         ZoneDef(
             id = "wasteland_01",
@@ -105,7 +100,7 @@ object WorldZones {
             lootMultiplier = 1.8,
             enemyIds = listOf("charybdis", "orc_lord"),
             unlockPhCost = 600L,
-            description = "🔥 ZONA CALIENTE: peligro extremo, botín x1,8.",
+            description = "Zona caliente: peligro extremo, botín x1,8.",
         ),
         ZoneDef(
             id = "dungeon_01",
@@ -117,7 +112,7 @@ object WorldZones {
             lootMultiplier = 2.0,
             enemyIds = listOf("demon_lord", "charybdis"),
             unlockPhCost = 1200L,
-            description = "🔥 ZONA CALIENTE: el desafío definitivo, botín x2.",
+            description = "Zona caliente: el desafío definitivo, botín x2.",
         ),
     )
 
