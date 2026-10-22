@@ -81,7 +81,7 @@ private fun HubHeader(ph: Long, coins: Long) {
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "IDLE TENsura",
+                text = "IDLE TENSURA",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
