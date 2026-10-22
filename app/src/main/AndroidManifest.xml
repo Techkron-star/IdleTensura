@@ -41,6 +41,7 @@
             </intent-filter>
         </activity>
 
+
         <receiver
             android:name=".receiver.SessionAlarmReceiver"
             android:exported="false" />

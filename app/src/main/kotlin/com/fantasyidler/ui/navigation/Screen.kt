@@ -211,6 +211,12 @@ sealed class Screen(
         icon     = Icons.AutoMirrored.Filled.MenuBook,
     )
 
+    object Tensura : Screen(
+        route    = "tensura",
+        labelRes = R.string.nav_skills,
+        icon     = Icons.Filled.Star,
+    )
+
     companion object {
         val bottomNavItems = listOf(Skills, Combat, Home, Quests, Profile)
     }

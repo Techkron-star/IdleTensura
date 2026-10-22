@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.EnterExitState
 import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
@@ -42,12 +44,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fantasyidler.data.model.CombatGuilds
 import com.fantasyidler.data.model.Skills
 import com.fantasyidler.notification.SessionNotificationManager
+import com.fantasyidler.tensura.data.TensuraRepository
+import com.fantasyidler.tensura.ui.TensuraHubScreen
 import com.fantasyidler.ui.screen.AppBannerHost
 import com.fantasyidler.ui.screen.BoneAltarScreen
 import com.fantasyidler.ui.screen.HouseScreen
@@ -144,7 +149,15 @@ fun AppNavigation(
 
     Scaffold(
         contentWindowInsets = WindowInsets(0),
+        floatingActionButton = {
+            if (currentDestination?.route == Screen.Home.route) {
+                FloatingActionButton(onClick = { navController.navigate(Screen.Tensura.route) }) {
+                    Text("✨")
+                }
+            }
+        },
         bottomBar = {
+            if (currentDestination?.route != Screen.Tensura.route) {
             NavigationBar(
                 windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
             ) {
@@ -220,6 +233,7 @@ fun AppNavigation(
                     )
                 }
             }
+            }
         }
     ) { innerPadding ->
         NavHost(
@@ -238,6 +252,11 @@ fun AppNavigation(
                     navController = navController,
                     openSkill     = entry.arguments?.getString("openSkill"),
                 )
+            }
+            paneComposable(Screen.Tensura.route) {
+                val context = LocalContext.current
+                val tensuraRepo = remember { TensuraRepository.get(context.applicationContext) }
+                TensuraHubScreen(repo = tensuraRepo)
             }
             paneComposable(Screen.Farming.route) { entry ->
                 FarmingScreen(onBack = { if (navController.currentBackStackEntry == entry) navController.popBackStack() })
