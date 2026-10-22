@@ -2076,6 +2076,30 @@ def gen_carnival() -> str:
     )
 
 
+SEASON_START_MONTHS = {"spring": 3, "summer": 6, "autumn": 9, "winter": 12}
+
+
+def _event_window(event: dict) -> tuple[int, int]:
+    """Start (inclusive) and end (exclusive) epoch ms of the event's first run.
+
+    Seasonal templates rotate yearly: the JSON stores a season and first_year instead of
+    fixed timestamps, mirroring SeasonalCalendar.kt in the app.
+    """
+    season = event.get("season")
+    first_year = event.get("first_year")
+    if season not in SEASON_START_MONTHS or not isinstance(first_year, int):
+        raise ValueError(
+            f"Seasonal event {event.get('id')!r} needs a valid season and first_year"
+        )
+    start_month = SEASON_START_MONTHS[season]
+    end_month = start_month + 3
+    end_year = first_year + (1 if end_month > 12 else 0)
+    end_month = ((end_month - 1) % 12) + 1
+    start = datetime(first_year, start_month, 1, tzinfo=timezone.utc)
+    end = datetime(end_year, end_month, 1, tzinfo=timezone.utc)
+    return int(start.timestamp() * 1000), int(end.timestamp() * 1000)
+
+
 def _fmt_event_date(ms: int, is_end: bool = False) -> str:
     # end_ms is the exclusive start of the day after the event ends, so step back
     # 1ms to display the actual last day (e.g. Sept 1 00:00 -> "August 31, 2026").
@@ -2088,6 +2112,7 @@ def gen_seasonal_events() -> str:
     assert isinstance(events, dict)
     sections = []
     for event_id, event in events.items():
+        start_ms, end_ms = _event_window(event)
         reward_rows = [
             [f"{tier['tokens']:,}", seasonal_reward_desc(event_id, tier["tokens"])]
             for tier in event["reward_tiers"]
@@ -2095,8 +2120,8 @@ def gen_seasonal_events() -> str:
         sections.append(get_template("miscellaneous/seasonal_event_section").format(
             banner=html_image(icon_path(event["banner_icon"]), "", "text"),
             display_name=seasonal_event_name(event_id),
-            start_date=_fmt_event_date(event["start_ms"]),
-            end_date=_fmt_event_date(event["end_ms"], is_end=True),
+            start_date=_fmt_event_date(start_ms),
+            end_date=_fmt_event_date(end_ms, is_end=True),
             reward_table=table(["Tokens Needed", "Reward"], reward_rows),
         ))
 
